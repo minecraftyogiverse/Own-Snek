@@ -46,5 +46,6 @@ void Game::ComposeFrame()
 	if (brd.isInBoard(loc))
 	{
 		brd.drawCell(loc, Colors::Red);
+		brd.drawBorder();
 	}
 }
