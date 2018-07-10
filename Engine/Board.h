@@ -8,12 +8,10 @@ class Board
 {
 public:
 	Board(Graphics& gfx);
-	void drawCell(const Location& loc, const Color& c) const;
+	void drawCell(const Location& loc, Color c);
 	int getWidth() const;
 	int getHeight() const;
-
 	void drawBorder();
-
 	bool isInBoard(const Location& loc) const;
 
 private:

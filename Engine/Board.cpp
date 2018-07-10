@@ -3,21 +3,19 @@
 Board::Board(Graphics & gfx)
 	:
 	gfx(gfx)
-{
-}
+{}
 
-void Board::drawCell(const Location& loc, const Color& c) const
+void Board::drawCell(const Location& loc, Color c)
 {
 	assert(loc.x >= 0);
-	assert(loc.x <= width);
+	assert(loc.x < gfx.ScreenWidth);
 	assert(loc.y >= 0);
-	assert(loc.y <= height);
+	assert(loc.y < gfx.ScreenHeight);
 
-	const int off_x = x + borderWidth + borderPadding;
-	const int off_y = y + borderWidth + borderPadding;
+	static constexpr int off_x = x + borderWidth + borderPadding;
+	static constexpr int off_y = y + borderWidth + borderPadding;
 
-	gfx.DrawRectDim(loc.x * dimension + off_x, loc.y * dimension + off_y, dimension, dimension, Colors::Black);
-	gfx.DrawRectDim(loc.x * dimension + off_x, loc.y * dimension + off_y, dimension - cellPadding, dimension - cellPadding, c);
+	gfx.DrawRectDim(loc.x * dimension + off_x + cellPadding, loc.y * dimension + off_y + cellPadding, dimension - cellPadding * 2, dimension - cellPadding * 2, c);
 
 }
 
@@ -43,14 +41,14 @@ void Board::drawBorder()
 	//bottom
 	gfx.DrawRect(left, bottom - borderWidth, right, bottom, borderColor);
 	//left
-	gfx.DrawRect(left, top, left + borderWidth, bottom, borderColor);
+	gfx.DrawRect(left, top + borderWidth, left + borderWidth, bottom - borderWidth, borderColor);
 	//right
-	gfx.DrawRect(right - borderWidth, top, right, bottom, borderColor);
+	gfx.DrawRect(right - borderWidth, top + borderWidth, right, bottom - borderWidth, borderColor);
 
 }
 
 bool Board::isInBoard(const Location & loc) const
 {
-	return loc.x > 0 && loc.x < width &&
-		loc.y > 0 && loc.y < height;
+	return loc.x >= 0 && loc.x < width 
+		&& loc.y >= 0 && loc.y < height;
 }

@@ -25,7 +25,9 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	brd(gfx)
+	brd(gfx),
+	snek({2, 2}),
+	goal(rng, snek, brd)
 {
 }
 
@@ -39,13 +41,83 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+
+	if (gameIsStarted)
+	{
+		if (!gameIsOver)
+		{
+			if (wnd.kbd.KeyIsPressed(VK_UP))
+			{
+				delta_loc = { 0, -1 };
+			}
+			if (wnd.kbd.KeyIsPressed(VK_DOWN))
+			{
+				delta_loc = { 0, 1 };
+			}
+			if (wnd.kbd.KeyIsPressed(VK_LEFT))
+			{
+				delta_loc = { -1, 0 };
+			}
+			if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+			{
+				delta_loc = { 1, 0 };
+			}
+
+
+			snekMoveCounter++;
+			if (snekMoveCounter >= snekMovePeriod)
+			{
+				snekMoveCounter = 0;
+							
+				
+				const Location next = snek.getNextHeadLocation(delta_loc);
+
+				bool colliding = snek.isInTileWithoutEnd(snek.getNextHeadLocation(delta_loc));
+
+				if (!brd.isInBoard(next) ||
+					colliding)
+				{
+					gameIsOver = true;
+				}
+				else
+				{
+					if (wnd.kbd.KeyIsPressed(VK_BACK))
+					{
+						snek.grow();
+					}
+					snek.moveBy(delta_loc);
+				
+				}
+
+			}
+			
+
+		}
+	}
+	else
+	{
+		gameIsStarted = wnd.kbd.KeyIsPressed(VK_RETURN);
+	}
+
 }
 
 void Game::ComposeFrame()
 {
-	if (brd.isInBoard(loc))
+	if (gameIsStarted)
 	{
-		brd.drawCell(loc, Colors::Red);
-		brd.drawBorder();
+		if (!gameIsOver)
+		{
+			brd.drawBorder();
+			snek.draw(brd);
+		}
+		else
+		{
+			SpriteCodex::DrawGameOver(200, 200, gfx);
+		}
 	}
+	else
+	{
+		SpriteCodex::DrawTitle(200, 200, gfx);
+	}
+
 }

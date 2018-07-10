@@ -26,6 +26,9 @@
 #include "Board.h"
 #include "Location.h"
 #include <random>
+#include "Snake.h"
+#include "SpriteCodex.h"
+#include "Goal.h"
 
 class Game
 {
@@ -48,7 +51,19 @@ private:
 
 	Board brd;
 
-	Location loc = { 1,1 };
+	Location delta_loc = { 1,0 };
+
+	Snake snek;
+
+	std::mt19937 rng;
+
+	Goal goal;
+
+	static constexpr int snekMovePeriod = 20;
+	int snekMoveCounter = 0;
+
+	bool gameIsStarted = false;
+	bool gameIsOver = false;
 
 	/********************************/
 };
