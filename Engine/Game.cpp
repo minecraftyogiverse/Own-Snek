@@ -73,12 +73,13 @@ void Game::UpdateModel()
 				
 				const Location next = snek.getNextHeadLocation(delta_loc);
 
-				bool colliding = snek.isInTileWithoutEnd(next);
+				bool collidingSelf = snek.isInTileWithoutEnd(next);
 
 				bool eating = next == goal.getLocation();
 
 				if (!brd.isInBoard(next) ||
-					colliding)
+					collidingSelf || 
+					isCollidingObst(snek))
 				{
 					gameIsOver = true;
 				}
@@ -88,6 +89,7 @@ void Game::UpdateModel()
 					{
 						goal.respawn(rng, snek, brd);
 						snek.grow();
+						increaseObst();
 					}
 
 					snek.moveBy(delta_loc);
@@ -110,6 +112,39 @@ void Game::UpdateModel()
 
 }
 
+void Game::increaseObst()
+{
+
+	nObstacles++;
+	for (int i = 0; i <= nObstacles; i++)
+	{
+		obsts[i].spawn(rng, snek, brd);
+	}
+
+}
+
+void Game::drawObstacles(Board& brd) const
+{
+
+	for (int i = 0; i < nObstacles; i++)
+	{
+		obsts[i].draw(brd);
+	}
+
+}
+
+bool Game::isCollidingObst(const Snake& snek) const
+{
+	for (int i = 0; i <= nObstacles; i++)
+	{
+		if (snek.getNextHeadLocation(delta_loc) == obsts[i].getLocation())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Game::ComposeFrame()
 {
 	if (gameIsStarted)
@@ -119,6 +154,7 @@ void Game::ComposeFrame()
 			brd.drawBorder();
 			snek.draw(brd);
 			goal.draw(brd);
+			drawObstacles(brd);
 		}
 		else
 		{

@@ -29,6 +29,7 @@
 #include "Snake.h"
 #include "SpriteCodex.h"
 #include "Goal.h"
+#include "Obstacle.h"
 
 class Game
 {
@@ -42,6 +43,9 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void increaseObst();
+	void drawObstacles(Board& brd) const;
+	bool isCollidingObst(const Snake& snek) const;
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -58,6 +62,11 @@ private:
 	std::mt19937 rng;
 
 	Goal goal;
+
+	static constexpr int nObstaclesMax = 100;
+	int nObstacles = 0;
+
+	Obstacle obsts[nObstaclesMax];
 
 	int snekMovePeriod = 20;
 	int snekMoveCounter = 0;
