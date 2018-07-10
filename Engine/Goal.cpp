@@ -10,8 +10,8 @@ Goal::Goal(std::mt19937 & rng, const Snake & snek, const Board & brd)
 void Goal::respawn(std::mt19937 & rng, const Snake & snek, const Board & brd)
 {
 
-	std::uniform_int_distribution<int> xDist(0, brd.getWidth());
-	std::uniform_int_distribution<int> yDist(0, brd.getHeight());
+	std::uniform_int_distribution<int> xDist(2, brd.getWidth() - 3);
+	std::uniform_int_distribution<int> yDist(2, brd.getHeight() - 3);
 
 	Location newLoc;
 

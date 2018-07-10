@@ -59,8 +59,11 @@ private:
 
 	Goal goal;
 
-	static constexpr int snekMovePeriod = 20;
+	int snekMovePeriod = 20;
 	int snekMoveCounter = 0;
+
+	static constexpr int snekSpeedUpPeriod = 180;
+	int snekSpeedUpCounter = 0;
 
 	bool gameIsStarted = false;
 	bool gameIsOver = false;

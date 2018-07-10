@@ -13,7 +13,7 @@ public:
 
 	const Location& getLocation() const;
 private:
-	Color c;
+	static constexpr Color c = Colors::Red;
 	Location loc;
 };
 

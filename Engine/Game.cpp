@@ -26,6 +26,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	brd(gfx),
+	rng(std::random_device()()),
 	snek({2, 2}),
 	goal(rng, snek, brd)
 {
@@ -72,7 +73,9 @@ void Game::UpdateModel()
 				
 				const Location next = snek.getNextHeadLocation(delta_loc);
 
-				bool colliding = snek.isInTileWithoutEnd(snek.getNextHeadLocation(delta_loc));
+				bool colliding = snek.isInTileWithoutEnd(next);
+
+				bool eating = next == goal.getLocation();
 
 				if (!brd.isInBoard(next) ||
 					colliding)
@@ -81,16 +84,22 @@ void Game::UpdateModel()
 				}
 				else
 				{
-					if (wnd.kbd.KeyIsPressed(VK_BACK))
+					if (eating)
 					{
+						goal.respawn(rng, snek, brd);
 						snek.grow();
 					}
+
 					snek.moveBy(delta_loc);
-				
 				}
 
 			}
-			
+			snekSpeedUpCounter++;
+			if (snekSpeedUpCounter >= snekSpeedUpPeriod)
+			{
+				snekSpeedUpCounter = 0;
+				snekMovePeriod--;
+			}
 
 		}
 	}
@@ -109,6 +118,7 @@ void Game::ComposeFrame()
 		{
 			brd.drawBorder();
 			snek.draw(brd);
+			goal.draw(brd);
 		}
 		else
 		{
